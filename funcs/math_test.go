@@ -1,6 +1,7 @@
 package funcs
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -76,4 +77,67 @@ func TestSeq(t *testing.T) {
 	assert.EqualValues(t, []int64{0}, mustSeq(0, 5, 8))
 	_, err := m.Seq()
 	assert.Error(t, err)
+}
+
+func TestIsIntFloatNum(t *testing.T) {
+	tests := []struct {
+		in      interface{}
+		isInt   bool
+		isFloat bool
+	}{
+		{0, true, false},
+		{1, true, false},
+		{-1, true, false},
+		{uint(42), true, false},
+		{uint8(255), true, false},
+		{uint16(42), true, false},
+		{uint32(42), true, false},
+		{uint64(42), true, false},
+		{int(42), true, false},
+		{int8(127), true, false},
+		{int16(42), true, false},
+		{int32(42), true, false},
+		{int64(42), true, false},
+		{float32(18.3), false, true},
+		{float64(18.3), false, true},
+		{1.5, false, true},
+		{-18.6, false, true},
+		{"42", true, false},
+		{"052", true, false},
+		{"0xff", true, false},
+		{"-42", true, false},
+		{"-0", true, false},
+		{"3.14", false, true},
+		{"-3.14", false, true},
+		{"0.00", false, true},
+		{"NaN", false, true},
+		{"-Inf", false, true},
+		{"+Inf", false, true},
+		{"", false, false},
+		{"foo", false, false},
+		{nil, false, false},
+		{true, false, false},
+	}
+	m := MathNS()
+	for _, tt := range tests {
+		t.Run(fmt.Sprintf("%T(%#v)", tt.in, tt.in), func(t *testing.T) {
+			assert.Equal(t, tt.isInt, m.IsInt(tt.in))
+			assert.Equal(t, tt.isFloat, m.IsFloat(tt.in))
+			assert.Equal(t, tt.isInt || tt.isFloat, m.IsNum(tt.in))
+		})
+	}
+}
+
+func BenchmarkIsFloat(b *testing.B) {
+	data := []interface{}{
+		0, 1, -1, uint(42), uint8(255), uint16(42), uint32(42), uint64(42), int(42), int8(127), int16(42), int32(42), int64(42), float32(18.3), float64(18.3), 1.5, -18.6, "42", "052", "0xff", "-42", "-0", "3.14", "-3.14", "0.00", "NaN", "-Inf", "+Inf", "", "foo", nil, true,
+	}
+	m := MathNS()
+	for _, n := range data {
+		b.Run(fmt.Sprintf("%T(%v)", n, n), func(b *testing.B) {
+			for i := 0; i < b.N; i++ {
+				m.IsFloat(n)
+			}
+		})
+	}
 }

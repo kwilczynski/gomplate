@@ -3,6 +3,7 @@ package funcs
 import (
 	"fmt"
 	gmath "math"
+	"strconv"
 	"sync"
 
 	"github.com/hairyhenderson/gomplate/conv"
@@ -36,6 +37,41 @@ func AddMathFuncs(f map[string]interface{}) {
 
 // MathFuncs -
 type MathFuncs struct{}
+
+// IsInt -
+func (f *MathFuncs) IsInt(n interface{}) bool {
+	switch i := n.(type) {
+	case int, int8, int16, int32, int64, uint, uint8, uint16, uint32, uint64:
+		return true
+	case string:
+		_, err := strconv.ParseInt(i, 0, 64)
+		return err == nil
+	}
+	return false
+}
+
+// IsFloat -
+func (f *MathFuncs) IsFloat(n interface{}) bool {
+	switch i := n.(type) {
+	case float32, float64:
+		return true
+	case string:
+		_, err := strconv.ParseFloat(i, 64)
+		if err != nil {
+			return false
+		}
+		if f.IsInt(i) {
+			return false
+		}
+		return err == nil
+	}
+	return false
+}
+
+// IsNum -
+func (f *MathFuncs) IsNum(n interface{}) bool {
+	return f.IsInt(n) || f.IsFloat(n)
+}
 
 // Add -
 func (f *MathFuncs) Add(n ...interface{}) int64 {
@@ -94,4 +130,29 @@ func (f *MathFuncs) Seq(n ...interface{}) ([]int64, error) {
 		step = conv.ToInt64(n[2])
 	}
 	return math.Seq(conv.ToInt64(start), conv.ToInt64(end), conv.ToInt64(step)), nil
+}
+
+// Max -
+func (f *MathFuncs) Max(n ...interface{}) (int64, error) {
+	return 0, nil
+}
+
+// Min -
+func (f *MathFuncs) Min(n ...interface{}) (int64, error) {
+	return 0, nil
+}
+
+// Ceil -
+func (f *MathFuncs) Ceil(n ...interface{}) (int64, error) {
+	return 0, nil
+}
+
+// Floor -
+func (f *MathFuncs) Floor(n ...interface{}) (int64, error) {
+	return 0, nil
+}
+
+// Round -
+func (f *MathFuncs) Round(n interface{}) (int64, error) {
+	return 0, nil
 }
