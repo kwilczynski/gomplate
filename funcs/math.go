@@ -133,22 +133,35 @@ func (f *MathFuncs) Seq(n ...interface{}) ([]int64, error) {
 }
 
 // Max -
-func (f *MathFuncs) Max(n ...interface{}) (int64, error) {
-	return 0, nil
+func (f *MathFuncs) Max(a interface{}, b ...interface{}) (int64, error) {
+	m := conv.ToInt64(a)
+	for _, n := range conv.ToInt64s(b...) {
+		if n > m {
+			m = n
+		}
+	}
+	return m, nil
 }
 
 // Min -
-func (f *MathFuncs) Min(n ...interface{}) (int64, error) {
-	return 0, nil
+func (f *MathFuncs) Min(a interface{}, b ...interface{}) (int64, error) {
+	m := conv.ToInt64(a)
+	for _, n := range conv.ToInt64s(b...) {
+		if n < m {
+			m = n
+		}
+	}
+	return m, nil
 }
 
 // Ceil -
-func (f *MathFuncs) Ceil(n ...interface{}) (int64, error) {
+func (f *MathFuncs) Ceil(n interface{}) (float64, error) {
+
 	return 0, nil
 }
 
 // Floor -
-func (f *MathFuncs) Floor(n ...interface{}) (int64, error) {
+func (f *MathFuncs) Floor(n interface{}) (int64, error) {
 	return 0, nil
 }
 

@@ -141,3 +141,59 @@ func BenchmarkIsFloat(b *testing.B) {
 		})
 	}
 }
+
+func TestMax(t *testing.T) {
+	m := MathNS()
+	data := []struct {
+		n        []interface{}
+		expected int64
+	}{
+		{[]interface{}{nil}, 0},
+		{[]interface{}{0}, 0},
+		{[]interface{}{"not a number"}, 0},
+		{[]interface{}{1}, 1},
+		{[]interface{}{-1}, -1},
+		{[]interface{}{-1, 0, 1}, 1},
+		{[]interface{}{3.14, 3, 3.9}, 3},
+		{[]interface{}{"14", "0xff", -5}, 255},
+	}
+	for _, d := range data {
+		t.Run(fmt.Sprintf("%v==%v", d.n, d.expected), func(t *testing.T) {
+			var actual int64
+			if len(d.n) == 1 {
+				actual, _ = m.Max(d.n[0])
+			} else {
+				actual, _ = m.Max(d.n[0], d.n[1:]...)
+			}
+			assert.Equal(t, d.expected, actual)
+		})
+	}
+}
+
+func TestMin(t *testing.T) {
+	m := MathNS()
+	data := []struct {
+		n        []interface{}
+		expected int64
+	}{
+		{[]interface{}{nil}, 0},
+		{[]interface{}{0}, 0},
+		{[]interface{}{"not a number"}, 0},
+		{[]interface{}{1}, 1},
+		{[]interface{}{-1}, -1},
+		{[]interface{}{-1, 0, 1}, -1},
+		{[]interface{}{3.14, 3, 3.9}, 3},
+		{[]interface{}{"14", "0xff", -5}, -5},
+	}
+	for _, d := range data {
+		t.Run(fmt.Sprintf("%v==%v", d.n, d.expected), func(t *testing.T) {
+			var actual int64
+			if len(d.n) == 1 {
+				actual, _ = m.Min(d.n[0])
+			} else {
+				actual, _ = m.Min(d.n[0], d.n[1:]...)
+			}
+			assert.Equal(t, d.expected, actual)
+		})
+	}
+}

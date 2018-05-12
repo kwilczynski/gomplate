@@ -9,8 +9,8 @@ A set of basic math functions to be able to perform simple arithmetic operations
 
 ### Supported input
 
-_**Note:** currently, `gomplate` supports only integer arithmetic. All functions
-return 64-bit integers (`int64` type). Floating point support will be added in
+_**Note:** currently, `gomplate` mostly supports only integer arithmetic. All functions
+return 64-bit integers (`int64` type) unless otherwise documented. More complete floating point support will be added in
 later releases._
 
 In general, any input will be converted to the correct input type by the various
